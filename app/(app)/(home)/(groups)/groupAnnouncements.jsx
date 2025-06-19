@@ -85,20 +85,7 @@ export default function GroupAnnouncementsScreen() {
                   </View>
                   <View style={styles.textContainer}>
                     <View style={styles.titleContainer}>
-                      <View
-                        style={[
-                          styles.statusBadge,
-                          {
-                            backgroundColor: getStatusColor(
-                              announcement.status
-                            ),
-                          },
-                        ]}
-                      >
-                        <Text style={styles.statusText}>
-                          {announcement.status}
-                        </Text>
-                      </View>
+                      {/*  */}
                       <Text style={styles.announcementTitle}>
                         {announcement.title}
                       </Text>
@@ -134,6 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    marginBottom: 60,
   },
   innerContent: {
     flex: 1,
