@@ -17,7 +17,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { userData, getUser, logout } = useAuth();
+  const { userData, getUser, logout, isAuthenticated } = useAuth();
   const { t, i18n } = useTranslation();
   const [pushNotifications, setPushNotifications] = useState(true);
   const [promotionalNotifications, setPromotionalNotifications] =
@@ -27,6 +27,8 @@ export default function ProfileScreen() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   useEffect(() => {
+    if (!isAuthenticated) return; // Don't fetch if not authenticated
+
     setSelectedLanguage(i18n.language);
     const fetchUserData = async () => {
       try {
@@ -45,7 +47,7 @@ export default function ProfileScreen() {
     return () => {
       i18n.off("languageChanged", onLangChanged);
     };
-  }, [getUser, i18n]);
+  }, [i18n, isAuthenticated]);
 
   const handleLanguageChange = async (lang) => {
     setSelectedLanguage(lang);
