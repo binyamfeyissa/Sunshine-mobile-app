@@ -14,8 +14,9 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!isAuthenticated) {
-    return <Redirect href="/login" />;
-  }
+    console.log("iuuuuuu");
+  return <Redirect href="/(auth)/login" />;
+}
 
   return children;
 }

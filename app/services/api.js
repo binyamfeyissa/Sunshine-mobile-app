@@ -200,7 +200,10 @@ paymentsApi.interceptors.request.use(
 const refreshToken = async () => {
   try {
     const refreshToken = await getItemAsync("refreshToken");
-    if (!refreshToken) throw new Error("No refresh token available");
+    if (!refreshToken) {
+      await handleAuthFailure();
+      throw new Error("No refresh token available");
+    }
 
     const response = await api.post("/refresh/", {
       refresh: refreshToken,
@@ -220,172 +223,88 @@ const handleAuthFailure = async () => {
   // Clear all auth data
   await deleteItemAsync("accessToken");
   await deleteItemAsync("refreshToken");
-  // Navigate to login page
-  router.replace("/login");
+  // Navigate to login page using Expo Router
+  router.navigate("/(auth)/login");
 };
 
 // Add a response interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return api(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to guestsApi
 guestsApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return guestsApi(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to incidentsApi
 incidentsApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return incidentsApi(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to servicesApi
 servicesApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return servicesApi(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to groupsApi
 groupsApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return groupsApi(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to announcementsApi
 announcementsApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return announcementsApi(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to pollsApi
 pollsApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const newAccessToken = await refreshToken();
-        originalRequest.headers.Authorization = `JWT ${newAccessToken}`;
-        return pollsApi(originalRequest);
-      } catch (refreshError) {
-        await handleAuthFailure();
-        return Promise.reject(refreshError);
-      }
+    if (error.response?.status === 401) {
+      await handleAuthFailure();
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );
 
-// Add the same response interceptor to paymentsApi
 paymentsApi.interceptors.response.use(
   (response) => response,
   async (error) => {

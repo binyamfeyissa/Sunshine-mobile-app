@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   api,
+  guestsApi,
+  incidentsApi,
+  servicesApi,
+  groupsApi,
+  announcementsApi,
+  pollsApi,
+  paymentsApi,
   logout as apiLogout,
   deleteItemAsync,
   getItemAsync,
@@ -11,7 +18,7 @@ const AuthContext = createContext(null);
 
 const API_BASE_URL =
   "https://api.sunshine-meri-luke-village.com/api/v1/accounts";
-const REFRESH_INTERVAL = 10 * 60 * 1000; // 10 minutes in milliseconds
+const REFRESH_INTERVAL = 1 * 60 * 1000; // 10 minutes in milliseconds
 
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
@@ -26,37 +33,49 @@ export const AuthProvider = ({ children }) => {
 
   // Add axios interceptor for handling 401 errors
   useEffect(() => {
-    const interceptor = api.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        const originalRequest = error.config;
-
-        // If the error is 401 and we haven't tried to refresh the token yet
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
-
+    const handle401 = async (error) => {
+      if (error.response?.status === 401) {
+        await clearAuthData();
+        // Use Expo Router navigation
+        if (typeof window !== 'undefined') {
+          // Use router from expo-router if available
           try {
-            // Try to refresh the token
-            const newToken = await refreshAccessToken();
-
-            // Update the authorization header
-            originalRequest.headers.Authorization = `JWT ${newToken}`;
-
-            // Retry the original request
-            return api(originalRequest);
-          } catch (refreshError) {
-            // If refresh fails, clear auth data and throw error
-            await clearAuthData();
-            throw refreshError;
+            const { router } = require("expo-router");
+            router.navigate("/(auth)/login");
+          } catch (e) {
+            // fallback: reload
+            window.location.href = "/(auth)/login";
           }
         }
-
-        return Promise.reject(error);
       }
-    );
+      return Promise.reject(error);
+    };
+
+    const interceptors = [
+      api,
+      guestsApi,
+      incidentsApi,
+      servicesApi,
+      groupsApi,
+      announcementsApi,
+      pollsApi,
+      paymentsApi,
+    ].map((instance) => instance.interceptors.response.use(
+      (response) => response,
+      handle401
+    ));
 
     return () => {
-      api.interceptors.response.eject(interceptor);
+      [
+        api,
+        guestsApi,
+        incidentsApi,
+        servicesApi,
+        groupsApi,
+        announcementsApi,
+        pollsApi,
+        paymentsApi,
+      ].forEach((instance, i) => instance.interceptors.response.eject(interceptors[i]));
     };
   }, [authState.refreshToken]);
 

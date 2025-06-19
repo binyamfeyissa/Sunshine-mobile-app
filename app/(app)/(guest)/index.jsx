@@ -3,7 +3,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
+import { 
     ActivityIndicator,
     ScrollView,
     StyleSheet,
@@ -12,7 +12,7 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { guestsApi } from "../../services/api";
+import { guestsApi, handleAuthFailure } from "../../services/api";
 
 export default function GuestScreen() {
   const router = useRouter();
@@ -36,6 +36,11 @@ export default function GuestScreen() {
       setGuests(guestsData);
       setError(null);
     } catch (err) {
+      if (err.response?.status === 401) {
+        console.log("hihii");
+        // Navigation to login is handled globally in the API interceptor
+        return;
+      }
       console.error("Error fetching guests:", err);
       setError("Failed to load guests. Please try again later.");
       setGuests([]); // Reset guests to empty array on error
