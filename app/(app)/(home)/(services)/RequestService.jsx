@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -15,21 +16,25 @@ import CurvedHeader from "../../../components/CurvedHeader";
 import { servicesApi } from "../../../services/api";
 
 export default function RequestService() {
+  const { t } = useTranslation();
   const [serviceDescription, setServiceDescription] = useState("");
   const [serviceType, setServiceType] = useState("PLUMBING");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: "Plumbing", value: "PLUMBING" },
-    { label: "Electricity", value: "ELECTRICITY" },
-    { label: "Cleaning", value: "CLEANING" },
-    { label: "Maintenance", value: "MAINTENANCE" },
-    { label: "Other", value: "OTHER" },
+    { label: t("plumbing", "Plumbing"), value: "PLUMBING" },
+    { label: t("electricity", "Electricity"), value: "ELECTRICITY" },
+    { label: t("cleaning", "Cleaning"), value: "CLEANING" },
+    { label: t("maintenance", "Maintenance"), value: "MAINTENANCE" },
+    { label: t("other", "Other"), value: "OTHER" },
   ]);
 
   const handleSubmit = async () => {
     if (!serviceDescription.trim()) {
-      Alert.alert("Error", "Please enter a service description");
+      Alert.alert(
+        t("error", "Error"),
+        t("enter_service_description", "Please enter a service description")
+      );
       return;
     }
 
@@ -42,23 +47,29 @@ export default function RequestService() {
       });
 
       setLoading(false);
-      Alert.alert("Success", "Service request submitted successfully");
+      Alert.alert(
+        t("success", "Success"),
+        t("service_request_submitted", "Service request submitted successfully")
+      );
       router.push("/(app)/(home)/(services)");
     } catch (error) {
       setLoading(false);
       Alert.alert(
-        "Error",
-        error.response?.data?.message || "Failed to submit service request"
+        t("error", "Error"),
+        error.response?.data?.message ||
+          t("service_request_failed", "Failed to submit service request")
       );
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <CurvedHeader title="Request Service" showBack />
+      <CurvedHeader title={t("request_service", "Request Service")} showBack />
       <View style={styles.content}>
         <View style={styles.innerContent}>
-          <Text style={styles.headerSubtitle}>Put the service you need below</Text>
+          <Text style={styles.headerSubtitle}>
+            {t("service_info_below", "Put the service you need below")}
+          </Text>
 
           <DropDownPicker
             open={open}
@@ -90,7 +101,7 @@ export default function RequestService() {
               fontSize: 15,
               color: "#222",
             }}
-            placeholder="Type here..."
+            placeholder={t("type_here", "Type here...")}
             value={serviceDescription}
             onChangeText={setServiceDescription}
             multiline
@@ -114,7 +125,7 @@ export default function RequestService() {
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
-                Submit
+                {t("submit", "Submit")}
               </Text>
             )}
           </TouchableOpacity>

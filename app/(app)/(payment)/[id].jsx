@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Linking,
@@ -14,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { paymentsApi } from "../../services/api";
 
 const PaymentDetailScreen = () => {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,13 +32,13 @@ const PaymentDetailScreen = () => {
         const response = await paymentsApi.get(`${id}/`);
         setPayment(response.data);
       } catch (_err) {
-        setError("Failed to load payment details.");
+        setError(t("payment_details_error", "Failed to load payment details."));
       } finally {
         setLoading(false);
       }
     };
     if (id) fetchPayment();
-  }, [id]);
+  }, [id, t]);
 
   // Clean up websocket on unmount
   useEffect(() => {
@@ -48,13 +50,16 @@ const PaymentDetailScreen = () => {
   let statusLabel = "";
   let statusColor = "#FF3B30";
   if (payment?.payment_status === "pending") {
-    statusLabel = "Not Paid";
+    statusLabel = t("not_paid", "Not Paid");
     statusColor = "#FF3B30";
   } else if (payment?.payment_status === "paid") {
-    statusLabel = "Paid";
+    statusLabel = t("paid", "Paid");
     statusColor = "#34C759";
   } else if (payment?.payment_status) {
-    statusLabel = payment.payment_status;
+    statusLabel = t(
+      payment.payment_status.toLowerCase(),
+      payment.payment_status
+    );
     statusColor = "#FF9500";
   }
 
@@ -95,14 +100,17 @@ const PaymentDetailScreen = () => {
       };
       socket.onerror = () => {
         setPaying(false);
-        setPayError("WebSocket connection error.");
+        setPayError(t("websocket_error", "WebSocket connection error."));
       };
       socket.onclose = () => {
         // Optionally handle close
       };
     } catch (err) {
       setPaying(false);
-      let apiError = "Failed to initiate payment. Please try again.";
+      let apiError = t(
+        "payment_initiation_failed",
+        "Failed to initiate payment. Please try again."
+      );
       if (err?.response?.data?.detail) {
         apiError = err.response.data.detail;
       } else if (err?.message) {
@@ -127,7 +135,9 @@ const PaymentDetailScreen = () => {
         ) : payment ? (
           <>
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{payment.reason || "Payment"}</Text>
+              <Text style={styles.title}>
+                {payment.reason || t("payment", "Payment")}
+              </Text>
               {statusLabel ? (
                 <View
                   style={[
@@ -140,8 +150,7 @@ const PaymentDetailScreen = () => {
               ) : null}
             </View>
             <Text style={styles.subtitle}>
-              {/* You can customize this if you have a requestedBy field */}
-              Payment ID: {payment.id}
+              {t("payment_id", "Payment ID")}: {payment.id}
             </Text>
             <View style={styles.paymentDetails}>
               <View style={styles.paymentRow}>
@@ -149,8 +158,12 @@ const PaymentDetailScreen = () => {
                   <Text style={styles.dollarSign}>$</Text>
                 </View>
                 <View style={styles.paymentInfo}>
-                  <Text style={styles.dueDate}>Due {payment.due_date}</Text>
-                  <Text style={styles.amount}>{payment.amount} Birr</Text>
+                  <Text style={styles.dueDate}>
+                    {t("due", "Due")} {payment.due_date}
+                  </Text>
+                  <Text style={styles.amount}>
+                    {payment.amount} {t("birr", "Birr")}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -160,7 +173,9 @@ const PaymentDetailScreen = () => {
               disabled={payment?.payment_status === "paid" || paying}
             >
               <Text style={styles.payButtonText}>
-                {payment?.payment_status === "paid" ? "Paid" : "Pay"}
+                {payment?.payment_status === "paid"
+                  ? t("paid", "Paid")
+                  : t("pay", "Pay")}
               </Text>
             </TouchableOpacity>
             {payError && (
@@ -209,7 +224,10 @@ const PaymentDetailScreen = () => {
                 textAlign: "center",
               }}
             >
-              Waiting for payment confirmation...
+              {t(
+                "waiting_payment_confirmation",
+                "Waiting for payment confirmation..."
+              )}
             </Text>
           </View>
         </View>

@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   ScrollView,
@@ -45,6 +46,7 @@ const PollCard = ({ poll, onPress }) => (
 
 export default function Polls() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +69,9 @@ export default function Polls() {
       setError(null);
     } catch (error) {
       console.error("Error fetching polls:", error);
-      setError("Failed to load polls. Please try again later.");
+      setError(
+        t("polls_error", "Failed to load polls. Please try again later.")
+      );
       setPolls([]);
     } finally {
       setLoading(false);
@@ -100,7 +104,7 @@ export default function Polls() {
           onPress={() => fetchPolls()}
           activeOpacity={0.7}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t("retry", "Retry")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -111,11 +115,14 @@ export default function Polls() {
       <View style={styles.content}>
         <View style={styles.innerContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Polls</Text>
+            <Text style={styles.title}>{t("polls", "Polls")}</Text>
           </View>
 
           <Text style={styles.subtitle}>
-            Participate in community polls and share your opinion
+            {t(
+              "polls_subtitle",
+              "Participate in community polls and share your opinion"
+            )}
           </Text>
 
           {polls.length === 0 ? (
@@ -125,7 +132,9 @@ export default function Polls() {
                 size={48}
                 color="#999"
               />
-              <Text style={styles.emptyText}>No polls available</Text>
+              <Text style={styles.emptyText}>
+                {t("no_polls_available", "No polls available")}
+              </Text>
             </View>
           ) : (
             <ScrollView
@@ -148,7 +157,9 @@ export default function Polls() {
                     onPress={() => fetchPolls(pagination.previous)}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.pageText}>Previous</Text>
+                    <Text style={styles.pageText}>
+                      {t("previous", "Previous")}
+                    </Text>
                   </TouchableOpacity>
                 )}
                 {pagination.next && (
@@ -157,7 +168,7 @@ export default function Polls() {
                     onPress={() => fetchPolls(pagination.next)}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.pageText}>Next</Text>
+                    <Text style={styles.pageText}>{t("next", "Next")}</Text>
                   </TouchableOpacity>
                 )}
               </View>

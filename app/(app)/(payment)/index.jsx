@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ScrollView,
   StatusBar,
@@ -13,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getPayments } from "../../services/api";
 
 const PaymentsScreen = () => {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,13 +26,13 @@ const PaymentsScreen = () => {
         console.log("Payments API response:", data); // Debug log
         setPayments(data.results || []);
       } catch (_) {
-        setError("Failed to load payments");
+        setError(t("payments_error", "Failed to load payments"));
       } finally {
         setLoading(false);
       }
     };
     fetchPayments();
-  }, []);
+  }, [t]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,17 +41,19 @@ const PaymentsScreen = () => {
       {/* Content */}
       <View style={styles.content}>
         <View style={styles.innerContent}>
-          <Text style={styles.title}>Payments</Text>
+          <Text style={styles.title}>{t("payments", "Payments")}</Text>
           <Text style={styles.subtitle}>
-            This are the list of payments requested by SunShine Meri Luke
-            Compound
+            {t(
+              "payments_list_subtitle",
+              "This are the list of payments requested by SunShine Meri Luke Compound"
+            )}
           </Text>
           {loading ? (
-            <Text>Loading...</Text>
+            <Text>{t("loading", "Loading...")}</Text>
           ) : error ? (
             <Text style={{ color: "red" }}>{error}</Text>
           ) : payments.length === 0 ? (
-            <Text>No payments found.</Text>
+            <Text>{t("no_payments_found", "No payments found.")}</Text>
           ) : (
             <ScrollView style={styles.paymentsList}>
               {payments.map((payment) => (
@@ -66,16 +70,22 @@ const PaymentsScreen = () => {
                     <View style={styles.textContainer}>
                       <Text style={styles.optionName}>{payment.reason}</Text>
                       <Text style={styles.optionDescription}>
-                        Due {payment.due_date}
+                        {t("due", "Due")} {payment.due_date}
                       </Text>
-                      <Text style={styles.amount}>{payment.amount} Birr</Text>
+                      <Text style={styles.amount}>
+                        {payment.amount} {t("birr", "Birr")}
+                      </Text>
                       {payment.payment_status === "paid" ? (
                         <View style={styles.paidBadge}>
-                          <Text style={styles.paidText}>Paid</Text>
+                          <Text style={styles.paidText}>
+                            {t("paid", "Paid")}
+                          </Text>
                         </View>
                       ) : (
                         <View style={styles.notPaidBadge}>
-                          <Text style={styles.notPaidText}>Not Paid</Text>
+                          <Text style={styles.notPaidText}>
+                            {t("not_paid", "Not Paid")}
+                          </Text>
                         </View>
                       )}
                     </View>

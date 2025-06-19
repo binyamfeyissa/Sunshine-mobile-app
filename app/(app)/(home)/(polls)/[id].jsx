@@ -1,10 +1,18 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Button from "../../../../components/ui/Button";
 import { pollsApi } from "../../../services/api";
 
 export default function PollDetail() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [poll, setPoll] = useState(null);
@@ -23,10 +31,10 @@ export default function PollDetail() {
         setLoading(false);
       })
       .catch((err) => {
-        setError("Failed to load poll");
+        setError(t("failed_load_poll", "Failed to load poll"));
         setLoading(false);
       });
-  }, [id]);
+  }, [id, t]);
 
   // Handle voting
   const handleVote = async (choiceId) => {
@@ -34,26 +42,41 @@ export default function PollDetail() {
     setSuccessMsg("");
     try {
       const res = await pollsApi.post(`${id}/vote/`, { choice: choiceId });
-      setSuccessMsg(res.data.message || "Vote submitted successfully.");
+      setSuccessMsg(
+        res.data.message ||
+          t("vote_submitted_successfully", "Vote submitted successfully.")
+      );
       setVotedChoice(choiceId);
       const updated = await pollsApi.get(`${id}/`);
       setPoll(updated.data);
     } catch (err) {
       // User-friendly error message extraction
       let msg = err?.response?.data?.detail || err?.response?.data?.message;
-      if (!msg && err?.response?.data && typeof err.response.data === "object") {
-        if (err.response.data.error && typeof err.response.data.error === "string") {
+      if (
+        !msg &&
+        err?.response?.data &&
+        typeof err.response.data === "object"
+      ) {
+        if (
+          err.response.data.error &&
+          typeof err.response.data.error === "string"
+        ) {
           msg = err.response.data.error;
         } else {
           // Try to extract all string values from the error object
-          const values = Object.values(err.response.data).filter(v => typeof v === "string");
+          const values = Object.values(err.response.data).filter(
+            (v) => typeof v === "string"
+          );
           if (values.length > 0) msg = values.join(". ");
         }
       }
       if (!msg && typeof err?.response?.data === "string") {
         msg = err.response.data;
       }
-      setError(msg || "Failed to submit vote. Please try again.");
+      setError(
+        msg ||
+          t("failed_submit_vote", "Failed to submit vote. Please try again.")
+      );
     }
   };
 
@@ -69,7 +92,7 @@ export default function PollDetail() {
     return (
       <View style={styles.centered}>
         <Text style={styles.error}>{error}</Text>
-        <Button title="Go Back" onPress={() => router.back()} />
+        <Button title={t("go_back", "Go Back")} onPress={() => router.back()} />
       </View>
     );
   }
@@ -80,7 +103,8 @@ export default function PollDetail() {
       <View style={styles.container}>
         <Text style={styles.question}>{poll.question}</Text>
         <Text style={styles.meta}>
-          Created: {new Date(poll.created_at).toLocaleString()}
+          {t("created", "Created")}:{" "}
+          {new Date(poll.created_at).toLocaleString()}
         </Text>
         <View style={styles.choicesContainer}>
           {poll.choices.map((choice) => {
@@ -105,12 +129,10 @@ export default function PollDetail() {
             );
           })}
         </View>
-        {successMsg ? (
-          <Text style={styles.success}>{successMsg}</Text>
-        ) : null}
+        {successMsg ? <Text style={styles.success}>{successMsg}</Text> : null}
         {votedChoice && (
           <Button
-            title="Back to Polls"
+            title={t("back_to_polls", "Back to Polls")}
             onPress={() => router.back()}
             style={{ marginTop: 24 }}
           />

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -12,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 const PaymentSuccessScreen = () => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
@@ -25,9 +27,14 @@ const PaymentSuccessScreen = () => {
             <Ionicons name="checkmark-circle" size={80} color="#4CD964" />
           </View>
 
-          <Text style={styles.successTitle}>Payment successful</Text>
+          <Text style={styles.successTitle}>
+            {t("payment_successful", "Payment successful")}
+          </Text>
           <Text style={styles.successMessage}>
-            Your payment has been Successfully placed. Thank you!
+            {t(
+              "payment_success_message",
+              "Your payment has been Successfully placed. Thank you!"
+            )}
           </Text>
         </View>
 
@@ -36,7 +43,9 @@ const PaymentSuccessScreen = () => {
           style={styles.homeButton}
           onPress={() => router.navigate("/(app)/(home)")}
         >
-          <Text style={styles.homeButtonText}>Go to Homepage</Text>
+          <Text style={styles.homeButtonText}>
+            {t("go_to_homepage", "Go to Homepage")}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

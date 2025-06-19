@@ -12,6 +12,7 @@ import { router, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import CurvedHeader from "../../../components/CurvedHeader";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const getServiceIcon = (type) => {
   switch (type?.toLowerCase()) {
@@ -30,74 +31,79 @@ const getServiceIcon = (type) => {
   }
 };
 
-const ServiceCard = ({ service }) => (
-  <TouchableOpacity
-    style={{
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: 16,
-      backgroundColor: "#fff",
-      borderRadius: 12,
-      marginBottom: 12,
-      borderBottomWidth: 1,
-      borderBottomColor: "#f0f0f0",
-    }}
-    onPress={() => router.push(`/(app)/(home)/(services)/${service.id}`)}
-    activeOpacity={0.7}
-  >
-    <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+const ServiceCard = ({ service }) => {
+  const { t } = useTranslation();
+
+  return (
+    <TouchableOpacity
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 16,
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        marginBottom: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: "#f0f0f0",
+      }}
+      onPress={() => router.push(`/(app)/(home)/(services)/${service.id}`)}
+      activeOpacity={0.7}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: "#F0F9FF",
+            justifyContent: "center",
+            alignItems: "center",
+            marginRight: 12,
+          }}
+        >
+          {getServiceIcon(service.service_type)}
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontWeight: "700", fontSize: 15, color: "#222" }}>
+            {service.service_type}
+          </Text>
+          <Text style={{ fontSize: 11, color: "#A1A1AA" }}>
+            {t("due", "Due")}{" "}
+            {new Date(service.created_at).toLocaleDateString(undefined, {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Text>
+        </View>
+      </View>
       <View
         style={{
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: "#F0F9FF",
-          justifyContent: "center",
-          alignItems: "center",
-          marginRight: 12,
+          marginLeft: 8,
+          backgroundColor:
+            service.request_status === "Pending"
+              ? "#FF5C5C"
+              : service.request_status === "Ongoing"
+              ? "#FFB020"
+              : "#22C55E",
+          borderRadius: 8,
+          paddingHorizontal: 8,
+          paddingVertical: 2,
+          alignSelf: "flex-start",
         }}
       >
-        {getServiceIcon(service.service_type)}
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontWeight: "700", fontSize: 15, color: "#222" }}>
-          {service.service_type}
-        </Text>
-        <Text style={{ fontSize: 11, color: "#A1A1AA" }}>
-          Due{" "}
-          {new Date(service.created_at).toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
+        <Text style={{ color: "#fff", fontSize: 11, fontWeight: "600" }}>
+          {t(service.request_status.toLowerCase(), service.request_status)}
         </Text>
       </View>
-    </View>
-    <View
-      style={{
-        marginLeft: 8,
-        backgroundColor:
-          service.request_status === "Pending"
-            ? "#FF5C5C"
-            : service.request_status === "Ongoing"
-            ? "#FFB020"
-            : "#22C55E",
-        borderRadius: 8,
-        paddingHorizontal: 8,
-        paddingVertical: 2,
-        alignSelf: "flex-start",
-      }}
-    >
-      <Text style={{ color: "#fff", fontSize: 11, fontWeight: "600" }}>
-        {service.request_status}
-      </Text>
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
+};
 
 export default function Services() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -140,14 +146,21 @@ export default function Services() {
   return (
     <View style={styles.container}>
       <CurvedHeader
-        title="Services"
-        rightIcon={<Ionicons name="add-circle-outline" size={24} color="#fff" />}
-        onRightPress={() => router.push("/(app)/(home)/(services)/RequestService")}
+        title={t("services", "Services")}
+        rightIcon={
+          <Ionicons name="add-circle-outline" size={24} color="#fff" />
+        }
+        onRightPress={() =>
+          router.push("/(app)/(home)/(services)/RequestService")
+        }
       />
       <View style={styles.content}>
         <View style={styles.innerContent}>
           <Text style={styles.subtitle}>
-            This is the list of services provided by SunShine Meri Luke Compound
+            {t(
+              "services_list_subtitle",
+              "This is the list of services provided by SunShine Meri Luke Compound"
+            )}
           </Text>
           {loading ? (
             <ActivityIndicator size="large" color="#007AFF" />
@@ -165,7 +178,9 @@ export default function Services() {
                     style={styles.paginationButton}
                     onPress={() => fetchServices(pagination.previous)}
                   >
-                    <Text style={styles.paginationText}>Previous</Text>
+                    <Text style={styles.paginationText}>
+                      {t("previous", "Previous")}
+                    </Text>
                   </TouchableOpacity>
                 )}
                 {pagination.next && (
@@ -173,7 +188,9 @@ export default function Services() {
                     style={styles.paginationButton}
                     onPress={() => fetchServices(pagination.next)}
                   >
-                    <Text style={styles.paginationText}>Next</Text>
+                    <Text style={styles.paginationText}>
+                      {t("next", "Next")}
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>

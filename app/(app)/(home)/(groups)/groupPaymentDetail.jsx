@@ -1,19 +1,21 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
-    Linking,
-    Modal,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Linking,
+  Modal,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { paymentsApi } from "../../../services/api";
 
 const PaymentDetailScreen = () => {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,13 +32,15 @@ const PaymentDetailScreen = () => {
         const response = await paymentsApi.get(`${id}/`);
         setPayment(response.data);
       } catch (_err) {
-        setError("Failed to load payment details.");
+        setError(
+          t("failed_load_payment_details", "Failed to load payment details.")
+        );
       } finally {
         setLoading(false);
       }
     };
     if (id) fetchPayment();
-  }, [id]);
+  }, [id, t]);
 
   // Clean up websocket on unmount
   useEffect(() => {
@@ -48,10 +52,10 @@ const PaymentDetailScreen = () => {
   let statusLabel = "";
   let statusColor = "#FF3B30";
   if (payment?.payment_status === "pending") {
-    statusLabel = "Not Paid";
+    statusLabel = t("not_paid", "Not Paid");
     statusColor = "#FF3B30";
   } else if (payment?.payment_status === "paid") {
-    statusLabel = "Paid";
+    statusLabel = t("paid", "Paid");
     statusColor = "#34C759";
   } else if (payment?.payment_status) {
     statusLabel = payment.payment_status;
@@ -70,7 +74,9 @@ const PaymentDetailScreen = () => {
       // 2. Open your hosted redirect page with params
       const redirectUrl = `https://staff.sunshine-meri-luke-village.com/paymentredirect.html?url=${encodeURIComponent(
         url
-      )}&me_id=${encodeURIComponent(me_id)}&merchant_request=${encodeURIComponent(
+      )}&me_id=${encodeURIComponent(
+        me_id
+      )}&merchant_request=${encodeURIComponent(
         merchant_request
       )}&hash=${encodeURIComponent(hash)}`;
       Linking.openURL(redirectUrl);
@@ -93,14 +99,21 @@ const PaymentDetailScreen = () => {
       };
       socket.onerror = () => {
         setPaying(false);
-        setPayError("WebSocket connection error.");
+        setPayError(
+          t("websocket_connection_error", "WebSocket connection error.")
+        );
       };
       socket.onclose = () => {
         // Optionally handle close
       };
     } catch (_err) {
       setPaying(false);
-      setPayError("Failed to initiate payment. Please try again.");
+      setPayError(
+        t(
+          "failed_initiate_payment",
+          "Failed to initiate payment. Please try again."
+        )
+      );
     }
   };
 
@@ -119,18 +132,22 @@ const PaymentDetailScreen = () => {
         ) : payment ? (
           <>
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>{payment.reason || "Payment"}</Text>
+              <Text style={styles.title}>
+                {payment.reason || t("payment", "Payment")}
+              </Text>
               {statusLabel ? (
                 <View
-                  style={[styles.notPaidBadge, { backgroundColor: statusColor }]}
+                  style={[
+                    styles.notPaidBadge,
+                    { backgroundColor: statusColor },
+                  ]}
                 >
                   <Text style={styles.notPaidText}>{statusLabel}</Text>
                 </View>
               ) : null}
             </View>
             <Text style={styles.subtitle}>
-              {/* You can customize this if you have a requestedBy field */}
-              Payment ID: {payment.id}
+              {t("payment_id", "Payment ID")}: {payment.id}
             </Text>
             <View style={styles.paymentDetails}>
               <View style={styles.paymentRow}>
@@ -138,7 +155,9 @@ const PaymentDetailScreen = () => {
                   <Text style={styles.dollarSign}>$</Text>
                 </View>
                 <View style={styles.paymentInfo}>
-                  <Text style={styles.dueDate}>Due {payment.due_date}</Text>
+                  <Text style={styles.dueDate}>
+                    {t("due", "Due")} {payment.due_date}
+                  </Text>
                   <Text style={styles.amount}>{payment.amount} Birr</Text>
                 </View>
               </View>
@@ -149,7 +168,9 @@ const PaymentDetailScreen = () => {
               disabled={payment?.payment_status === "paid" || paying}
             >
               <Text style={styles.payButtonText}>
-                {payment?.payment_status === "paid" ? "Paid" : "Pay"}
+                {payment?.payment_status === "paid"
+                  ? t("paid", "Paid")
+                  : t("pay", "Pay")}
               </Text>
             </TouchableOpacity>
             {payError && (
@@ -198,7 +219,10 @@ const PaymentDetailScreen = () => {
                 textAlign: "center",
               }}
             >
-              Waiting for payment confirmation...
+              {t(
+                "waiting_payment_confirmation",
+                "Waiting for payment confirmation..."
+              )}
             </Text>
           </View>
         </View>

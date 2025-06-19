@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   ScrollView,
@@ -14,6 +15,7 @@ import RenderHtml from "react-native-render-html";
 import { announcementsApi } from "../../../services/api";
 
 export default function GroupAnnouncementsScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const [groupAnnouncements, setGroupAnnouncements] = useState([]);
@@ -29,7 +31,7 @@ export default function GroupAnnouncementsScreen() {
           title: item.announcement_title,
           content: item.announcement_content, // keep HTML
           date: new Date(item.created_at).toLocaleDateString(),
-          status: "Active",
+          status: t("active", "Active"),
         }));
         setGroupAnnouncements(mapped);
       } catch (error) {
@@ -40,10 +42,10 @@ export default function GroupAnnouncementsScreen() {
     };
 
     loadAnnouncements();
-  }, [id]);
+  }, [id, t]);
 
   const getStatusColor = (status) => {
-    return status === "New" ? "#4CD964" : "#FF9500";
+    return status === t("new", "New") ? "#4CD964" : "#FF9500";
   };
 
   if (loading) {
@@ -59,11 +61,16 @@ export default function GroupAnnouncementsScreen() {
       <View style={styles.content}>
         <View style={styles.innerContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Group Announcements</Text>
+            <Text style={styles.title}>
+              {t("group_announcements", "Group Announcements")}
+            </Text>
           </View>
 
           <Text style={styles.subtitle}>
-            These are the announcements for your group
+            {t(
+              "group_announcements_description",
+              "These are the announcements for your group"
+            )}
           </Text>
 
           <ScrollView style={styles.announcementsList}>

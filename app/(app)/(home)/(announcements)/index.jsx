@@ -11,6 +11,7 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { getAnnouncements } from "../../../services/api";
+import { useTranslation } from "react-i18next";
 
 const AnnouncementCard = React.memo(
   ({ title, description, time, group, onPress }) => (
@@ -41,6 +42,7 @@ const AnnouncementCard = React.memo(
 );
 
 export default function Announcements() {
+  const { t } = useTranslation();
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,7 +57,7 @@ export default function Announcements() {
       const data = await getAnnouncements();
       setAnnouncements(data.results);
     } catch (err) {
-      setError("Failed to load announcements");
+      setError(t("announcements_error", "Failed to load announcements"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -123,7 +125,7 @@ export default function Announcements() {
       >
         {todayAnnouncements.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Today</Text>
+            <Text style={styles.sectionTitle}>{t("today", "Today")}</Text>
             {todayAnnouncements.map((announcement) => (
               <AnnouncementCard
                 key={announcement.id}
@@ -139,7 +141,9 @@ export default function Announcements() {
 
         {yesterdayAnnouncements.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Yesterday</Text>
+            <Text style={styles.sectionTitle}>
+              {t("yesterday", "Yesterday")}
+            </Text>
             {yesterdayAnnouncements.map((announcement) => (
               <AnnouncementCard
                 key={announcement.id}

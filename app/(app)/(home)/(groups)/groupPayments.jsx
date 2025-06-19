@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   ScrollView,
@@ -12,6 +13,7 @@ import {
 import { getGroupPayments } from "../../../services/groupPayments";
 
 export default function GroupPaymentsScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,10 @@ export default function GroupPaymentsScreen() {
           title: item.reason,
           amount: `Birr ${item.amount}`,
           dueDate: item.due_date,
-          status: item.payment_status === "paid" ? "Paid" : "Pending",
+          status:
+            item.payment_status === "paid"
+              ? t("paid", "Paid")
+              : t("pending", "Pending"),
         }));
         setGroupPayments(mapped);
       } catch (_error) {
@@ -38,10 +43,10 @@ export default function GroupPaymentsScreen() {
       }
     };
     if (id) loadPayments();
-  }, [id]);
+  }, [id, t]);
 
   const getStatusColor = (status) => {
-    return status === "Paid" ? "#4CD964" : "#FF9500";
+    return status === t("paid", "Paid") ? "#4CD964" : "#FF9500";
   };
 
   if (loading) {
@@ -57,11 +62,16 @@ export default function GroupPaymentsScreen() {
       <View style={styles.content}>
         <View style={styles.innerContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Group Payments</Text>
+            <Text style={styles.title}>
+              {t("group_payments", "Group Payments")}
+            </Text>
           </View>
 
           <Text style={styles.subtitle}>
-            These are the payments for your group
+            {t(
+              "group_payments_description",
+              "These are the payments for your group"
+            )}
           </Text>
 
           <ScrollView style={styles.paymentsList}>
@@ -71,7 +81,8 @@ export default function GroupPaymentsScreen() {
                 style={styles.paymentCard}
                 onPress={() =>
                   router.push({
-                    pathname: "/(app)/(home)/(groups)/groupPaymentDetail/[paymentId]",
+                    pathname:
+                      "/(app)/(home)/(groups)/groupPaymentDetail/[paymentId]",
                     params: { paymentId: payment.id },
                   })
                 }
@@ -84,7 +95,7 @@ export default function GroupPaymentsScreen() {
                     <Text style={styles.paymentTitle}>{payment.title}</Text>
                     <Text style={styles.paymentAmount}>{payment.amount}</Text>
                     <Text style={styles.paymentDate}>
-                      Due: {payment.dueDate}
+                      {t("due", "Due")}: {payment.dueDate}
                     </Text>
                   </View>
                   <View

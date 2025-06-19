@@ -10,8 +10,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { groupsApi } from "../../../services/api";
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function GroupsScreen() {
+  const { t } = useTranslation();
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,12 +26,14 @@ export default function GroupsScreen() {
       setError(null);
     } catch (err) {
       console.log(err);
-      setError("Failed to load groups. Please try again later.");
+      setError(
+        t("groups_error", "Failed to load groups. Please try again later.")
+      );
       setGroups([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchGroups();
@@ -59,7 +63,7 @@ export default function GroupsScreen() {
           onPress={fetchGroups}
           activeOpacity={0.7}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t("retry", "Retry")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -70,17 +74,22 @@ export default function GroupsScreen() {
       <View style={styles.content}>
         <View style={styles.innerContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Groups</Text>
+            <Text style={styles.title}>{t("groups", "Groups")}</Text>
           </View>
 
           <Text style={styles.subtitle}>
-            These are the list of groups you are a member of
+            {t(
+              "groups_list_subtitle",
+              "These are the list of groups you are a member of"
+            )}
           </Text>
 
           {groups.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Ionicons name="people-outline" size={48} color="#999" />
-              <Text style={styles.emptyText}>No groups available</Text>
+              <Text style={styles.emptyText}>
+                {t("no_groups_available", "No groups available")}
+              </Text>
             </View>
           ) : (
             <ScrollView
@@ -102,7 +111,11 @@ export default function GroupsScreen() {
                     <View style={styles.textContainer}>
                       <Text style={styles.groupName}>{group.name}</Text>
                       <Text style={styles.groupDescription}>
-                        {group.description || "No description available"}
+                        {group.description ||
+                          t(
+                            "no_description_available",
+                            "No description available"
+                          )}
                       </Text>
                     </View>
                   </View>

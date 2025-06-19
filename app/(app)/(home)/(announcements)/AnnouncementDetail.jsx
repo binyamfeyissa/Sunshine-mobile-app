@@ -1,9 +1,17 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
-import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import RenderHtml from "react-native-render-html";
 
 export default function AnnouncementDetail() {
+  const { t } = useTranslation();
   const { title, content, time, group } = useLocalSearchParams();
   const { width } = useWindowDimensions();
 

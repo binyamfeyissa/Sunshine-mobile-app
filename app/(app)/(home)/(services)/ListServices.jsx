@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { servicesApi } from "../../../services/api";
 import {
   View,
@@ -10,9 +11,14 @@ import {
 } from "react-native";
 
 export default function ListServices() {
+  const { t } = useTranslation();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({ count: 0, next: null, previous: null });
+  const [pagination, setPagination] = useState({
+    count: 0,
+    next: null,
+    previous: null,
+  });
 
   const fetchServices = async (url = "/") => {
     setLoading(true);
@@ -39,14 +45,21 @@ export default function ListServices() {
     <View style={styles.serviceCard}>
       <Text style={styles.serviceType}>{item.service_type}</Text>
       <Text style={styles.serviceDescription}>{item.request_description}</Text>
-      <Text style={styles.serviceStatus}>Status: {item.request_status}</Text>
-      <Text style={styles.serviceDate}>Requested on: {new Date(item.created_at).toLocaleDateString()}</Text>
+      <Text style={styles.serviceStatus}>
+        {t("status", "Status")}: {item.request_status}
+      </Text>
+      <Text style={styles.serviceDate}>
+        {t("requested_on", "Requested on")}:{" "}
+        {new Date(item.created_at).toLocaleDateString()}
+      </Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Service Requests</Text>
+      <Text style={styles.title}>
+        {t("service_requests", "Service Requests")}
+      </Text>
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" />
       ) : (
@@ -61,7 +74,9 @@ export default function ListServices() {
                   style={styles.paginationButton}
                   onPress={() => fetchServices(pagination.previous)}
                 >
-                  <Text style={styles.paginationText}>Previous</Text>
+                  <Text style={styles.paginationText}>
+                    {t("previous", "Previous")}
+                  </Text>
                 </TouchableOpacity>
               )}
               {pagination.next && (
@@ -69,7 +84,7 @@ export default function ListServices() {
                   style={styles.paginationButton}
                   onPress={() => fetchServices(pagination.next)}
                 >
-                  <Text style={styles.paginationText}>Next</Text>
+                  <Text style={styles.paginationText}>{t("next", "Next")}</Text>
                 </TouchableOpacity>
               )}
             </View>

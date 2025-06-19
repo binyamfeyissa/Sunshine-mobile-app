@@ -9,9 +9,11 @@ import {
   Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { servicesApi } from "../../../../services/api";
 
 export default function ServiceReviewScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [selectedRating, setSelectedRating] = useState(null);
@@ -20,7 +22,7 @@ export default function ServiceReviewScreen() {
 
   const handleSubmit = async () => {
     if (!selectedRating) {
-      Alert.alert("Please select a rating.");
+      Alert.alert(t("please_select_rating", "Please select a rating."));
       return;
     }
     setLoading(true);
@@ -33,7 +35,13 @@ export default function ServiceReviewScreen() {
       router.push("/(app)/(home)/(services)");
     } catch (err) {
       setLoading(false);
-      Alert.alert("Error", "Failed to submit feedback. Please try again.");
+      Alert.alert(
+        t("error", "Error"),
+        t(
+          "failed_submit_feedback",
+          "Failed to submit feedback. Please try again."
+        )
+      );
     }
   };
 
@@ -41,10 +49,14 @@ export default function ServiceReviewScreen() {
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.innerContent}>
-          <Text style={styles.title}>How was your Experience?</Text>
+          <Text style={styles.title}>
+            {t("how_was_experience", "How was your Experience?")}
+          </Text>
           <Text style={styles.subtitle}>
-            Your order is Successfully Done. Do you mind giving a small feedback
-            about your experience?
+            {t(
+              "order_successfully_done",
+              "Your order is Successfully Done. Do you mind giving a small feedback about your experience?"
+            )}
           </Text>
 
           <View style={styles.emojiContainer}>
@@ -96,10 +108,12 @@ export default function ServiceReviewScreen() {
           </View>
 
           <View style={styles.reviewInputContainer}>
-            <Text style={styles.reviewLabel}>WRITE A REVIEW</Text>
+            <Text style={styles.reviewLabel}>
+              {t("write_review", "WRITE A REVIEW")}
+            </Text>
             <TextInput
               style={styles.input}
-              placeholder="Type here.."
+              placeholder={t("type_here", "Type here..")}
               placeholderTextColor="#999"
               value={review}
               onChangeText={setReview}
@@ -113,7 +127,7 @@ export default function ServiceReviewScreen() {
               style={styles.skipButton}
               onPress={() => router.back()}
             >
-              <Text style={styles.skipButtonText}>Skip</Text>
+              <Text style={styles.skipButtonText}>{t("skip", "Skip")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -126,7 +140,9 @@ export default function ServiceReviewScreen() {
               {loading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.submitButtonText}>Submit</Text>
+                <Text style={styles.submitButtonText}>
+                  {t("submit", "Submit")}
+                </Text>
               )}
             </TouchableOpacity>
           </View>

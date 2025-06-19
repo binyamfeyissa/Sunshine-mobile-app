@@ -1,35 +1,44 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PaymentFailedScreen = () => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
-      <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}> 
+      <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
         <View style={styles.failedContainer}>
           <View style={styles.failedIconContainer}>
             <Ionicons name="close-circle" size={80} color="#FF3B30" />
           </View>
-          <Text style={styles.failedTitle}>Payment Failed</Text>
+          <Text style={styles.failedTitle}>
+            {t("payment_failed", "Payment Failed")}
+          </Text>
           <Text style={styles.failedMessage}>
-            Your payment was not successful. Please try again or contact support.
+            {t(
+              "payment_failed_message",
+              "Your payment was not successful. Please try again or contact support."
+            )}
           </Text>
         </View>
         <TouchableOpacity
           style={styles.homeButton}
           onPress={() => router.navigate("/(app)/(home)")}
         >
-          <Text style={styles.homeButtonText}>Go to Homepage</Text>
+          <Text style={styles.homeButtonText}>
+            {t("go_to_homepage", "Go to Homepage")}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

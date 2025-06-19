@@ -12,9 +12,11 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { servicesApi } from "../../../services/api";
 
 export default function ServiceDetailScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [service, setService] = useState(null);
@@ -33,7 +35,12 @@ export default function ServiceDetailScreen() {
       setService(response.data);
       setError(null);
     } catch (err) {
-      setError("Failed to load service details. Please try again later.");
+      setError(
+        t(
+          "failed_load_service_details",
+          "Failed to load service details. Please try again later."
+        )
+      );
       setService(null);
     } finally {
       setLoading(false);
@@ -42,12 +49,15 @@ export default function ServiceDetailScreen() {
 
   const handleDelete = () => {
     Alert.alert(
-      "Delete Service Request",
-      "Are you sure you want to delete this service request? This action cannot be undone.",
+      t("delete_service_request", "Delete Service Request"),
+      t(
+        "delete_service_confirmation",
+        "Are you sure you want to delete this service request? This action cannot be undone."
+      ),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("cancel", "Cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("delete", "Delete"),
           style: "destructive",
           onPress: async () => {
             try {
@@ -58,8 +68,11 @@ export default function ServiceDetailScreen() {
             } catch (err) {
               setDeleting(false);
               Alert.alert(
-                "Error",
-                "Failed to delete service. Please try again."
+                t("error", "Error"),
+                t(
+                  "failed_delete_service",
+                  "Failed to delete service. Please try again."
+                )
               );
             }
           },
@@ -79,13 +92,15 @@ export default function ServiceDetailScreen() {
   if (error || !service) {
     return (
       <SafeAreaView style={[styles.container, styles.errorContainer]}>
-        <Text style={styles.errorText}>{error || "Service not found"}</Text>
+        <Text style={styles.errorText}>
+          {error || t("service_not_found", "Service not found")}
+        </Text>
         <TouchableOpacity
           style={styles.retryButton}
           onPress={fetchServiceDetails}
           activeOpacity={0.7}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t("retry", "Retry")}</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -113,27 +128,35 @@ export default function ServiceDetailScreen() {
 
         <View style={styles.detailsContainer}>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Service Type</Text>
+            <Text style={styles.detailLabel}>
+              {t("service_type", "Service Type")}
+            </Text>
             <Text style={styles.detailValue}>{service.service_type}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Status</Text>
+            <Text style={styles.detailLabel}>{t("status", "Status")}</Text>
             <Text style={styles.detailValue}>{service.request_status}</Text>
           </View>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Description</Text>
+            <Text style={styles.detailLabel}>
+              {t("description", "Description")}
+            </Text>
             <Text style={styles.detailValue}>
               {service.request_description}
             </Text>
           </View>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Created At</Text>
+            <Text style={styles.detailLabel}>
+              {t("created_at", "Created At")}
+            </Text>
             <Text style={styles.detailValue}>
               {new Date(service.created_at).toLocaleString()}
             </Text>
           </View>
           <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Last Updated</Text>
+            <Text style={styles.detailLabel}>
+              {t("last_updated", "Last Updated")}
+            </Text>
             <Text style={styles.detailValue}>
               {new Date(service.updated_at).toLocaleString()}
             </Text>
@@ -148,7 +171,9 @@ export default function ServiceDetailScreen() {
             disabled={deleting}
           >
             <Text style={styles.deleteButtonText}>
-              {deleting ? "Deleting..." : "Delete Service Request"}
+              {deleting
+                ? t("deleting", "Deleting...")
+                : t("delete_service_request", "Delete Service Request")}
             </Text>
           </TouchableOpacity>
         )}
@@ -175,8 +200,8 @@ export default function ServiceDetailScreen() {
               ]}
             >
               {service.rating !== null && service.rating !== undefined
-                ? "Already Reviewed"
-                : "Review"}
+                ? t("already_reviewed", "Already Reviewed")
+                : t("review", "Review")}
             </Text>
           </TouchableOpacity>
         )}

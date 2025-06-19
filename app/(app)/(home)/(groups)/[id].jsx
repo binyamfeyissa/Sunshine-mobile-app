@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
   ScrollView,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
 } from "react-native";
 
 export default function GroupDetailsScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
 
   return (
@@ -16,12 +18,17 @@ export default function GroupDetailsScreen() {
       <View style={styles.content}>
         <View style={styles.innerContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Group Details</Text>
+            <Text style={styles.title}>
+              {t("group_details", "Group Details")}
+            </Text>
             <View style={{ width: 24 }} />
           </View>
 
           <Text style={styles.subtitle}>
-            Select an option to manage your group
+            {t(
+              "select_option_manage_group",
+              "Select an option to manage your group"
+            )}
           </Text>
 
           <ScrollView
@@ -43,9 +50,14 @@ export default function GroupDetailsScreen() {
                   <Ionicons name="cash" size={20} color="#4CD964" />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.optionName}>Payments</Text>
+                  <Text style={styles.optionName}>
+                    {t("payments", "Payments")}
+                  </Text>
                   <Text style={styles.optionDescription}>
-                    View and manage group payments
+                    {t(
+                      "view_manage_group_payments",
+                      "View and manage group payments"
+                    )}
                   </Text>
                 </View>
               </View>
@@ -69,9 +81,14 @@ export default function GroupDetailsScreen() {
                   <Ionicons name="megaphone" size={20} color="#FF9500" />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text style={styles.optionName}>Announcements</Text>
+                  <Text style={styles.optionName}>
+                    {t("announcements", "Announcements")}
+                  </Text>
                   <Text style={styles.optionDescription}>
-                    View and manage group announcements
+                    {t(
+                      "view_manage_group_announcements",
+                      "View and manage group announcements"
+                    )}
                   </Text>
                 </View>
               </View>
