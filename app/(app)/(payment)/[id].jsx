@@ -29,7 +29,7 @@ const PaymentDetailScreen = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await paymentsApi.get(`${id}/`);
+        const response = await paymentsApi.get(`self/${id}/`);
         setPayment(response.data);
       } catch (_err) {
         setError(t("payment_details_error", "Failed to load payment details."));
