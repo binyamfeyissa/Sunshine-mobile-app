@@ -75,7 +75,7 @@ const PaymentsScreen = () => {
                       <Text style={styles.amount}>
                         {payment.amount} {t("birr", "Birr")}
                       </Text>
-                      {payment.payment_status === "paid" ? (
+                      {payment.status === "paid" ? (
                         <View style={styles.paidBadge}>
                           <Text style={styles.paidText}>
                             {t("paid", "Paid")}
