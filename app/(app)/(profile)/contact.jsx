@@ -57,14 +57,6 @@ export default function ContactScreen() {
             </TouchableOpacity>
           ))}
         </View>
-
-        <TouchableOpacity
-          style={styles.homeButton}
-          onPress={() => router.push("/(home)")}
-        >
-          <Text style={styles.homeButtonText}>Go to Homepage</Text>
-          <Ionicons name="arrow-forward" size={20} color="#000" />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

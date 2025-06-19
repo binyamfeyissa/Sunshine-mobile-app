@@ -24,6 +24,7 @@ export default function GroupPaymentsScreen() {
       setLoading(true);
       try {
         const data = await getGroupPayments(id);
+        console.log(data)
         // Map API response to UI fields
         const mapped = (data.results || []).map((item) => ({
           id: item.id,
@@ -31,7 +32,7 @@ export default function GroupPaymentsScreen() {
           amount: `Birr ${item.amount}`,
           dueDate: item.due_date,
           status:
-            item.payment_status === "paid"
+            item.status === "paid"
               ? t("paid", "Paid")
               : t("pending", "Pending"),
         }));

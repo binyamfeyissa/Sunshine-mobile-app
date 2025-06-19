@@ -42,8 +42,9 @@ export default function ForgotPassword() {
           label="Phone Number"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          placeholder="+251 987456321"
+          placeholder="987456321"
           keyboardType="phone-pad"
+          prefix="+251"
         />
 
         <Button

@@ -94,7 +94,7 @@ export default function OTPVerification() {
       <Text style={styles.timerText}>
         Code Sent. Resend Code in{" "}
         <Text style={styles.timer}>
-          {Math.floor(timer / 10)}0:{timer % 10}0
+          00:{Math.floor(timer / 10)}{timer % 10}
         </Text>
       </Text>
 

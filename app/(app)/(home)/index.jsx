@@ -6,11 +6,13 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -25,6 +27,20 @@ export default function HomeScreen() {
   const flatListRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const autoScrollTimer = useRef(null);
+
+  // Handler to open links with error alert
+  const handleOpenLink = async (url) => {
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert("Error", "Unable to open the link.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Unable to open the link.");
+    }
+  };
 
   // Card data as array
   const cards = [
@@ -48,7 +64,12 @@ export default function HomeScreen() {
             <Text style={styles.communityText}>
               {t("community_love_unity", "Community of love and unity")}
             </Text>
-            <TouchableOpacity style={styles.contactButton}>
+            <TouchableOpacity
+              style={styles.contactButton}
+              onPress={() =>
+                handleOpenLink("https://chat.whatsapp.com/dummygroup")
+              }
+            >
               <Text style={styles.contactButtonText}>
                 {t("contact_us", "Contact Us")}
               </Text>
@@ -75,7 +96,12 @@ export default function HomeScreen() {
             <Text style={styles.text}>
               {t("happy_residents", "Happy Residents")}
             </Text>
-            <TouchableOpacity style={styles.link}>
+            <TouchableOpacity
+              style={styles.link}
+              onPress={() =>
+                handleOpenLink("https://sunshine-meri-luke-village.com/en/home/")
+              }
+            >
               <Text style={styles.linkText}>{t("join_us", "Join Us")}</Text>
             </TouchableOpacity>
           </View>
@@ -98,7 +124,12 @@ export default function HomeScreen() {
             <Text style={styles.text}>
               {t("premium_services", "Premium Services")}
             </Text>
-            <TouchableOpacity style={styles.link}>
+            <TouchableOpacity
+              style={styles.link}
+              onPress={() =>
+                handleOpenLink("https://sunshine-meri-luke-village.com/en/home/")
+              }
+            >
               <Text style={styles.linkText}>{t("explore", "Explore")}</Text>
             </TouchableOpacity>
           </View>

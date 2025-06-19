@@ -66,7 +66,7 @@ export default function ProfileScreen() {
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
     >
       <SafeAreaView style={styles.innerContent}>
         {/* Language Switcher */}
@@ -92,46 +92,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Notifications Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>NOTIFICATIONS</Text>
-          <View style={styles.settingItem}>
-            <View style={styles.settingLeft}>
-              <Ionicons name="notifications-outline" size={24} color="#666" />
-              <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>Push Notifications</Text>
-                <Text style={styles.settingDescription}>
-                  For daily updates and others
-                </Text>
-              </View>
-            </View>
-            <Switch
-              value={pushNotifications}
-              onValueChange={setPushNotifications}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={pushNotifications ? "#2196F3" : "#f4f3f4"}
-            />
-          </View>
-          <View style={styles.settingItem}>
-            <View style={styles.settingLeft}>
-              <Ionicons name="megaphone-outline" size={24} color="#666" />
-              <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>
-                  Promotional Notifications
-                </Text>
-                <Text style={styles.settingDescription}>
-                  New Campaign & Offers
-                </Text>
-              </View>
-            </View>
-            <Switch
-              value={promotionalNotifications}
-              onValueChange={setPromotionalNotifications}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={promotionalNotifications ? "#2196F3" : "#f4f3f4"}
-            />
-          </View>
-        </View>
+      
 
         {/* More Section */}
         <View style={styles.section}>
@@ -169,22 +130,7 @@ export default function ProfileScreen() {
             </View>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => router.push("/(profile)/faq")}
-          >
-            <View style={styles.menuLeft}>
-              <Ionicons name="help-circle-outline" size={24} color="#666" />
-              <View style={styles.menuText}>
-                <Text style={styles.menuTitle}>FAQs</Text>
-                <Text style={styles.menuDescription}>
-                  Frequently asked questions
-                </Text>
-              </View>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#666" />
-          </TouchableOpacity>
+{/*  */}
 
           <TouchableOpacity
             style={[styles.menuItem, styles.logoutItem]}

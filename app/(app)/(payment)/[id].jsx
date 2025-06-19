@@ -31,6 +31,7 @@ const PaymentDetailScreen = () => {
       try {
         const response = await paymentsApi.get(`self/${id}/`);
         setPayment(response.data);
+         console.log("Payments API response:", response.data); // Debug log
       } catch (_err) {
         setError(t("payment_details_error", "Failed to load payment details."));
       } finally {
@@ -49,16 +50,16 @@ const PaymentDetailScreen = () => {
 
   let statusLabel = "";
   let statusColor = "#FF3B30";
-  if (payment?.payment_status === "pending") {
+  if (payment?.status === "pending") {
     statusLabel = t("not_paid", "Not Paid");
     statusColor = "#FF3B30";
-  } else if (payment?.payment_status === "paid") {
+  } else if (payment?.status === "paid") {
     statusLabel = t("paid", "Paid");
     statusColor = "#34C759";
-  } else if (payment?.payment_status) {
+  } else if (payment?.status) {
     statusLabel = t(
-      payment.payment_status.toLowerCase(),
-      payment.payment_status
+      payment.status.toLowerCase(),
+      payment.status
     );
     statusColor = "#FF9500";
   }
@@ -170,10 +171,10 @@ const PaymentDetailScreen = () => {
             <TouchableOpacity
               style={styles.payButton}
               onPress={handlePay}
-              disabled={payment?.payment_status === "paid" || paying}
+              disabled={payment?.status === "paid" || paying}
             >
               <Text style={styles.payButtonText}>
-                {payment?.payment_status === "paid"
+                {payment?.status === "paid"
                   ? t("paid", "Paid")
                   : t("pay", "Pay")}
               </Text>
