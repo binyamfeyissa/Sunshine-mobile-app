@@ -81,10 +81,27 @@ export default function Register() {
         });
       } catch (error) {
         console.error("Registration error:", error);
-        setRegisterError(
-          error.response?.data?.message ||
-            "Registration failed. Please try again."
-        );
+        let backendMsg = "Registration failed. Please try again.";
+        if (error.response?.data) {
+          const data = error.response.data;
+          if (typeof data === "string") {
+            backendMsg = data;
+          } else if (typeof data === "object" && data !== null) {
+            // Flatten object errors (e.g., { field: ["msg"] })
+            backendMsg = Object.values(data)
+              .map((value) => {
+                if (Array.isArray(value)) {
+                  return value.join("\n");
+                } else if (typeof value === "object" && value !== null) {
+                  return Object.values(value).join("\n");
+                } else {
+                  return value;
+                }
+              })
+              .join("\n");
+          }
+        }
+        setRegisterError(backendMsg);
       } finally {
         setIsLoading(false);
       }
@@ -104,6 +121,11 @@ export default function Register() {
         {registerError ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{registerError}</Text>
+          </View>
+        ) : null}
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
 
@@ -183,7 +205,12 @@ export default function Register() {
             </TouchableOpacity>
             <Text style={styles.termsText}>
               By creating an account, you agree to our{" "}
-              <Text style={styles.termsLink}>Terms and Conditions</Text>
+              <Text
+                style={styles.termsLink}
+                onPress={() => router.push("/termsAndConditions")}
+              >
+                Terms and Conditions
+              </Text>
             </Text>
           </View>
 
